@@ -1,0 +1,26 @@
+simpleshipsheet.png
+size: 128, 128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+ship
+  rotate: false
+  xy: 0, 0
+  size: 45, 45
+  orig: 45, 45
+  offset: 0, 0
+  index: -1
+shipleft
+  rotate: false
+  xy: 45, 0
+  size: 45, 45
+  orig: 45, 45
+  offset: 0, 0
+  index: -1
+ShipRight
+  rotate: false
+  xy: 0, 45
+  size: 45, 45
+  orig: 45, 45
+  offset: 0, 0
+  index: -1

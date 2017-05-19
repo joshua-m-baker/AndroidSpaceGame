@@ -1,0 +1,26 @@
+spritesheet.png
+size: 64, 64
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+enemyship
+  rotate: false
+  xy: 0, 24
+  size: 42, 18
+  orig: 42, 18
+  offset: 0, 0
+  index: -1
+enemyship1
+  rotate: false
+  xy: 0, 0
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+playership
+  rotate: false
+  xy: 20, 0
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
