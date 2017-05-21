@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import java.util.ArrayList;
+
 /**
  * Created by Joshua on 5/19/2017.
  */
@@ -16,57 +18,67 @@ public class PlayerShip {
     //private final int screenWidth;
     //private final int screenHeight;
 
-    private final int WORLD_WIDTH;
-    private final int WORLD_HEIGHT;
+    private final float WORLD_WIDTH;
+    private final float WORLD_HEIGHT;
 
     private Sprite sprite;
 
     private float speed;
+
+    public boolean hasFired;
+    public float fireDelay;
+
+    private float fireTimer;
+
+    private int leftGunX;
+    private int leftGunY;
+    private int rightGunX;
+    private int rightGunY;
 
     //private int xPos;
     //private int yPos;
 
 
 
-    public PlayerShip(int WORLD_WIDTH, int WORLD_HEIGHT){
-
-        //this.screenWidth = screenWidth;
-        //this.screenHeight = screenHeight;
-
-        //System.out.println(screenHeight);
-
-        //int targetSize = screenHeight/9;
+    public PlayerShip(float WORLD_WIDTH, float WORLD_HEIGHT){
 
         this.WORLD_HEIGHT = WORLD_HEIGHT;
         this.WORLD_WIDTH = WORLD_WIDTH;
 
-        speed = 2;
+
+        //number of seconds to cross screen
+        float seconds = 3;
+
+        speed = WORLD_WIDTH/seconds;
+
+        hasFired = false;
+        fireDelay = 1;
+        fireTimer = 0;
+
+        leftGunX = 3;
+        leftGunY = 15;
+
+        rightGunX = 19;
+        rightGunY = 15;
 
         sprite = new Sprite(new Texture(imagePath));
 
-        //sprite.setScale(targetSize);
-        //sprite.setSize(targetSize, targetSize);
-        //sprite.setX(screenWidth/2);
-        sprite.setPosition(0,0);
+        sprite.setPosition(WORLD_WIDTH/2 - sprite.getWidth(), 3);
     }
 
-    public void moveLeft(){
+    public void moveLeft(float delta){
 
-        float nextPos = getLeft() - speed;
+        float nextPos = getLeft() - speed * delta;
 
         if (nextPos <= 0) nextPos = 0;
 
         sprite.setX(nextPos);
     }
 
-    public void moveRight(){
+    public void moveRight(float delta){
 
-        float nextPos = getLeft() + speed;
-        float nextRight = getRight() + speed;
-
-        System.out.println("World Width: " + WORLD_WIDTH);
-        System.out.println("Sprite WidthL: " + sprite.getWidth());
-        System.out.println("Sprite left: " + getLeft());
+        float nextPos = getLeft() + speed * delta;
+        float nextRight = nextPos + sprite.getWidth();
 
         if (nextRight >= WORLD_WIDTH){
             nextPos = WORLD_WIDTH - sprite.getWidth();
@@ -78,6 +90,23 @@ public class PlayerShip {
     public void draw(Batch batch){
 
         sprite.draw(batch);
+
+    }
+
+    public ArrayList<Bullet> fire(float delta){
+
+        ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+
+        fireTimer += delta;
+
+        if (fireTimer >= fireDelay){
+            fireTimer -= fireDelay;
+            bullets.add(new Bullet(sprite.getX() + leftGunX, sprite.getY() + leftGunY));
+            bullets.add(new Bullet(sprite.getX() + rightGunX, sprite.getY() + rightGunY));
+            return bullets;
+        }
+
+        return null;
 
     }
 
