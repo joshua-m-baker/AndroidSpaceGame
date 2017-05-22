@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game.Weapons;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -8,21 +8,18 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
  * Created by Joshua on 5/21/2017.
  */
 
-public class Bullet {
-
-    private final String imageName = "bullet.png";
+public abstract class Projectile {
 
     private Sprite sprite;
 
-    private float speed;
+    protected float speed;
+    protected int damage;
 
-    public Bullet(float x, float y){
+    public Projectile(float x, float y, String imageName){
 
         sprite = new Sprite(new Texture(imageName));
 
         sprite.setPosition(x, y);
-
-        speed = 50;
 
     }
 
@@ -38,4 +35,7 @@ public class Bullet {
 
     }
 
+    public int getDamage(){
+        return damage;
+    }
 }

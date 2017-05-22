@@ -1,9 +1,7 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -28,7 +26,7 @@ public class GameScreen extends ScreenAdapter {
 
     private PlayerShip ship;
     private AlienShip enemy;
-    private ArrayList<Bullet> bullets;
+    private ArrayList<com.mygdx.game.Weapons.Bullet> bullets;
 
     public GameScreen(SpaceGame game, SpriteBatch batch){
 
@@ -40,7 +38,7 @@ public class GameScreen extends ScreenAdapter {
 
         ship = new PlayerShip(WORLD_WIDTH, WORLD_HEIGHT);
         enemy = new AlienShip(WORLD_WIDTH, WORLD_HEIGHT * (h/w));
-        bullets = new ArrayList<Bullet>();
+        bullets = new ArrayList<com.mygdx.game.Weapons.Bullet>();
 
         camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT * (h/w));
         camera.position.set(camera.viewportWidth/2f, camera.viewportHeight/2f, 0);
@@ -67,7 +65,7 @@ public class GameScreen extends ScreenAdapter {
         batch.begin();
         ship.draw(batch);
         enemy.draw(batch);
-        for(Bullet b: bullets){
+        for(com.mygdx.game.Weapons.Bullet b: bullets){
             b.draw(batch);
         }
         batch.end();
@@ -104,7 +102,7 @@ public class GameScreen extends ScreenAdapter {
 
         }
         enemy.move(delta);
-        for(Bullet b: bullets){
+        for(com.mygdx.game.Weapons.Bullet b: bullets){
             b.move(delta);
         }
     }

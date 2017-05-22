@@ -1,9 +1,11 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.mygdx.game.Weapons.MachineGun;
+import com.mygdx.game.Weapons.Projectile;
+import com.mygdx.game.Weapons.Weapon;
 
 import java.util.ArrayList;
 
@@ -25,16 +27,7 @@ public class PlayerShip {
 
     private float speed;
 
-    public boolean hasFired;
-    public float fireDelay;
-
-    private float fireTimer;
-
-    private int leftGunX;
-    private int leftGunY;
-    private int rightGunX;
-    private int rightGunY;
-
+    private Weapon weapon;
     //private int xPos;
     //private int yPos;
 
@@ -45,26 +38,18 @@ public class PlayerShip {
         this.WORLD_HEIGHT = WORLD_HEIGHT;
         this.WORLD_WIDTH = WORLD_WIDTH;
 
-
         //number of seconds to cross screen
         float seconds = 3;
 
         speed = WORLD_WIDTH/seconds;
 
-        hasFired = false;
-        fireDelay = 1;
-        fireTimer = 0;
-
-        leftGunX = 3;
-        leftGunY = 15;
-
-        rightGunX = 19;
-        rightGunY = 15;
-
         sprite = new Sprite(new Texture(imagePath));
 
         sprite.setPosition(WORLD_WIDTH/2 - sprite.getWidth(), 3);
+
+        weapon = new MachineGun();
     }
+
 
     public void moveLeft(float delta){
 
@@ -93,20 +78,9 @@ public class PlayerShip {
 
     }
 
-    public ArrayList<Bullet> fire(float delta){
+    public ArrayList<com.mygdx.game.Weapons.Bullet> fire(float delta){
 
-        ArrayList<Bullet> bullets = new ArrayList<Bullet>();
-
-        fireTimer += delta;
-
-        if (fireTimer >= fireDelay){
-            fireTimer -= fireDelay;
-            bullets.add(new Bullet(sprite.getX() + leftGunX, sprite.getY() + leftGunY));
-            bullets.add(new Bullet(sprite.getX() + rightGunX, sprite.getY() + rightGunY));
-            return bullets;
-        }
-
-        return null;
+       return weapon.fire(delta, sprite.getX(), sprite.getY());
 
     }
 
