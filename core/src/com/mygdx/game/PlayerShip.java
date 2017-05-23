@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.mygdx.game.Weapons.MachineGun;
-import com.mygdx.game.Weapons.Projectile;
 import com.mygdx.game.Weapons.Weapon;
 
 import java.util.ArrayList;
@@ -13,43 +12,27 @@ import java.util.ArrayList;
  * Created by Joshua on 5/19/2017.
  */
 
-public class PlayerShip {
+public class PlayerShip extends Ship {
 
-    private final String imagePath = "playership.png";
+    private static int startingHealth = 5;
 
-    //private final int screenWidth;
-    //private final int screenHeight;
-
-    private final float WORLD_WIDTH;
-    private final float WORLD_HEIGHT;
-
-    private Sprite sprite;
-
+    private static float secondsToCrossScreen = 4.2f;
     private float speed;
 
-    private Weapon weapon;
-    //private int xPos;
-    //private int yPos;
-
-
+    private static final String imagePath = "playership.png";
 
     public PlayerShip(float WORLD_WIDTH, float WORLD_HEIGHT){
+        super(WORLD_WIDTH, WORLD_HEIGHT, imagePath, new MachineGun(), startingHealth);
 
-        this.WORLD_HEIGHT = WORLD_HEIGHT;
-        this.WORLD_WIDTH = WORLD_WIDTH;
-
-        //number of seconds to cross screen
-        float seconds = 3;
-
-        speed = WORLD_WIDTH/seconds;
+        speed = WORLD_WIDTH/secondsToCrossScreen;
 
         sprite = new Sprite(new Texture(imagePath));
 
-        sprite.setPosition(WORLD_WIDTH/2 - sprite.getWidth(), 3);
+        //set the starting location in the center, up off the bottom by a small margin
+        sprite.setPosition(WORLD_WIDTH/2 - sprite.getWidth(), WORLD_HEIGHT/100);
 
         weapon = new MachineGun();
     }
-
 
     public void moveLeft(float delta){
 
@@ -72,36 +55,8 @@ public class PlayerShip {
         sprite.setX(nextPos);
     }
 
-    public void draw(Batch batch){
-
-        sprite.draw(batch);
-
+    @Override
+    public void hit(float damage) {
+        //TODO
     }
-
-    public ArrayList<com.mygdx.game.Weapons.Bullet> fire(float delta){
-
-       return weapon.fire(delta, sprite.getX(), sprite.getY());
-
-    }
-
-    public void setX(int x){
-        sprite.setX(x);
-    }
-
-    public void setY(int y){
-        sprite.setY(y);
-    }
-
-    public float getLeft(){ return sprite.getX(); }
-
-    public float getRight(){ return sprite.getX() + sprite.getWidth(); }
-
-    public float getX(){
-        return sprite.getX();
-    }
-
-    public float getY(){
-        return sprite.getY();
-    }
-
 }

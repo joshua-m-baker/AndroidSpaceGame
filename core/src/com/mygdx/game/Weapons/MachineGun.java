@@ -11,19 +11,13 @@ public class MachineGun extends Weapon{
 
     Burst burst;
 
-    private int leftGunX;
-    private int leftGunY;
-    private int rightGunX;
-    private int rightGunY;
+    private final int leftGunX = 3;
+    private final int leftGunY = 15;
+    private final int rightGunX = 19;
+    private final int rightGunY = 15;
 
     public MachineGun(){
-        burst = new Burst(2f, .5f, 3);
-
-        leftGunX = 3;
-        leftGunY = 15;
-        rightGunX = 19;
-        rightGunY = 15;
-
+        burst = new Burst(1.5f, .35f, 3);
     }
 
     @Override

@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Vector2;
  * Created by Joshua on 5/21/2017.
  */
 
-public class AlienShip {
+public class AlienShip extends Enemy {
 
     private final String imagePath = "enemyship1.png";
 
@@ -18,8 +18,6 @@ public class AlienShip {
 
     private final float WORLD_WIDTH;
     private final float WORLD_HEIGHT;
-
-    private Sprite sprite;
 
     private float speed;
     private float xDir;
@@ -31,6 +29,8 @@ public class AlienShip {
 
         speed = 50;
         xDir = 1;
+
+        health = 1;
 
         sprite = new Sprite(new Texture(imagePath));
 

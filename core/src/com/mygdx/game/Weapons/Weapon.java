@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Created by Joshua on 5/21/2017.
  */
 
-public abstract class Weapon<T> {
+public abstract class Weapon {
 
     private Projectile projectileType;
 

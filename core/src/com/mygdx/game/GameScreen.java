@@ -6,6 +6,7 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.game.Weapons.Projectile;
 
 import java.util.ArrayList;
 
@@ -25,8 +26,9 @@ public class GameScreen extends ScreenAdapter {
     OrthographicCamera camera;
 
     private PlayerShip ship;
-    private AlienShip enemy;
-    private ArrayList<com.mygdx.game.Weapons.Bullet> bullets;
+    private ArrayList<Enemy> enemies;
+    private ArrayList<Projectile> playerProjectiles;
+
 
     public GameScreen(SpaceGame game, SpriteBatch batch){
 
@@ -36,9 +38,11 @@ public class GameScreen extends ScreenAdapter {
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
 
-        ship = new PlayerShip(WORLD_WIDTH, WORLD_HEIGHT);
-        enemy = new AlienShip(WORLD_WIDTH, WORLD_HEIGHT * (h/w));
-        bullets = new ArrayList<com.mygdx.game.Weapons.Bullet>();
+        playerProjectiles = new ArrayList<Projectile>();
+        enemies = new ArrayList<Enemy>();
+        ship = new PlayerShip(WORLD_WIDTH, WORLD_HEIGHT * (h/w));
+        enemies.add(new AlienShip(WORLD_WIDTH, WORLD_HEIGHT * (h/w)));
+
 
         camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT * (h/w));
         camera.position.set(camera.viewportWidth/2f, camera.viewportHeight/2f, 0);
@@ -64,9 +68,11 @@ public class GameScreen extends ScreenAdapter {
 
         batch.begin();
         ship.draw(batch);
-        enemy.draw(batch);
-        for(com.mygdx.game.Weapons.Bullet b: bullets){
-            b.draw(batch);
+        for(Enemy e: enemies){
+            e.draw(batch);
+        }
+        for(Projectile p: playerProjectiles){
+            p.draw(batch);
         }
         batch.end();
     }
@@ -96,15 +102,54 @@ public class GameScreen extends ScreenAdapter {
         handleInput(delta);
         //If an arraylist was returned, add it to our main bullet list
         try{
-            bullets.addAll(ship.fire(delta));
+            playerProjectiles.addAll(ship.fire(delta));
         }
-        catch(java.lang.NullPointerException e){
+        catch(java.lang.NullPointerException e){}
 
+        for(Enemy e: enemies){
+            e.move(delta);
         }
-        enemy.move(delta);
-        for(com.mygdx.game.Weapons.Bullet b: bullets){
-            b.move(delta);
+
+        for(Projectile p: playerProjectiles){
+            p.move(delta);
         }
+
+        checkCollisions();
+        if(playerProjectiles.size() > 30){
+            System.out.println("Lots of bullets");
+        }
+    }
+
+    public void checkCollisions(){
+        checkPlayerProjectileCollisions();
+    }
+
+    private void checkPlayerProjectileCollisions() {
+
+        ArrayList<Projectile> projectilesToRemove = new ArrayList<Projectile>();
+        ArrayList<Enemy> enemiesToRemove = new ArrayList<Enemy>();
+
+        for (int i = 0; i < playerProjectiles.size(); i++) {
+            if (playerProjectiles.get(i).getY() > WORLD_HEIGHT) {
+                projectilesToRemove.add(playerProjectiles.get(i));
+            } else {
+
+                for (int j = 0; j < enemies.size(); j++) {
+                    if (playerProjectiles.get(i).getRect().overlaps(enemies.get(j).getRect())) {
+                        projectilesToRemove.add(playerProjectiles.get(i));
+                        enemiesToRemove.add(enemies.get(j));
+                    }
+                }
+            }
+        }
+
+        playerProjectiles.removeAll(projectilesToRemove);
+        enemies.removeAll(enemiesToRemove);
+
+    }
+
+    private void checkEnemyProjectileCollisions(){
+
     }
 
 }
