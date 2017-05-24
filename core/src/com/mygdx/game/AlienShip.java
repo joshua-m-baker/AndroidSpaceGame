@@ -1,5 +1,8 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.CatmullRomSpline;
+import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Weapons.MachineGun;
 
 /**
@@ -14,29 +17,39 @@ public class AlienShip extends Ship{
     private float speed;
     private float xDir;
 
-    public AlienShip(float WORLD_WIDTH, float WORLD_HEIGHT){
+    private float current;
+
+    private CatmullRomSpline<Vector2> spline;
+    private Vector2 out;
+
+    private Vector2[] points;
+    private int counter;
+
+    public AlienShip(float WORLD_WIDTH, float WORLD_HEIGHT, Vector2[] splinePoints){
         super(WORLD_WIDTH, WORLD_HEIGHT, imagePath, new MachineGun(), startingHealth);
         pos.set(0, WORLD_HEIGHT - getHeight());
-        speed = 50;
+        speed = 10f;
         xDir = 1;
 
+       spline = new CatmullRomSpline<Vector2>(splinePoints, false);
+        int k = 100; //increase k for more fidelity to the spline
+        points = new Vector2[k];
+        CatmullRomSpline<Vector2> myCatmull = new CatmullRomSpline<Vector2>(splinePoints, true);
     }
 
     public void move(float delta){
 
-        float nextPos = xDir * speed * delta + getX();
+        out = new Vector2();
 
-        if (nextPos <= 0){
-            nextPos = 0;
-            changeXDir();
-        }
+        spline.derivativeAt(out, current);
+        setAngle(out.angle());
 
-        if (nextPos + getWidth() >= WORLD_WIDTH){
-            nextPos = WORLD_WIDTH - getWidth();
-            changeXDir();
-        }
+        current += (delta*speed)/out.len();
 
-        setX(nextPos);
+        if(current >= 1) current -= 1;
+
+        spline.valueAt(out, current);
+        pos.set(out);
 
     }
 

@@ -6,6 +6,7 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Weapons.Projectile;
 
 import java.util.ArrayList;
@@ -23,10 +24,10 @@ public class GameScreen extends ScreenAdapter {
     private SpaceGame game;
     private SpriteBatch batch;
 
-    OrthographicCamera camera;
+    private OrthographicCamera camera;
 
-    private PlayerShip ship;
-    private ArrayList<Enemy> enemies;
+    private PlayerShip playerShip;
+    private ArrayList<Ship> enemies;
     private ArrayList<Projectile> playerProjectiles;
 
 
@@ -39,9 +40,14 @@ public class GameScreen extends ScreenAdapter {
         float h = Gdx.graphics.getHeight();
 
         playerProjectiles = new ArrayList<Projectile>();
-        enemies = new ArrayList<Enemy>();
-        ship = new PlayerShip(WORLD_WIDTH, WORLD_HEIGHT * (h/w));
-        enemies.add(new AlienShip(WORLD_WIDTH, WORLD_HEIGHT * (h/w)));
+        enemies = new ArrayList<Ship>();
+        playerShip = new PlayerShip(WORLD_WIDTH, WORLD_HEIGHT * (h/w));
+
+        Vector2[] splinePoints = {new Vector2(30, 25), new Vector2(60, 50),
+        new Vector2(100, 60), new Vector2(120, 80), new Vector2(180, 85),
+                new Vector2(180, 90), new Vector2(210, 100)};
+
+        enemies.add(new AlienShip(WORLD_WIDTH, WORLD_HEIGHT * (h/w), splinePoints));
 
 
         camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT * (h/w));
@@ -67,8 +73,8 @@ public class GameScreen extends ScreenAdapter {
         batch.setProjectionMatrix(camera.combined);
 
         batch.begin();
-        ship.draw(batch);
-        for(Enemy e: enemies){
+        playerShip.draw(batch);
+        for(Ship e: enemies){
             e.draw(batch);
         }
         for(Projectile p: playerProjectiles){
@@ -83,30 +89,36 @@ public class GameScreen extends ScreenAdapter {
             int screenX = Gdx.input.getX();
 
             if (screenX >= Gdx.graphics.getWidth() / 2) {
-                ship.moveRight(delta);
+                playerShip.goingRight();
             } else if (screenX < Gdx.graphics.getWidth() / 2) {
-                ship.moveLeft(delta);
+                playerShip.goingLeft();
             }
+        } else if (Gdx.input.isKeyPressed(Input.Keys.ANY_KEY)) {
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+                playerShip.goingLeft();
+            } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+                playerShip.goingRight();
+            }
+
+        } else{
+            playerShip.goingForward();
         }
 
-        else if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-            ship.moveLeft(delta);
-        }
-
-        else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
-            ship.moveRight(delta);
-        }
     }
 
     public void update(float delta){
         handleInput(delta);
         //If an arraylist was returned, add it to our main bullet list
+
+
         try{
-            playerProjectiles.addAll(ship.fire(delta));
+            playerProjectiles.addAll(playerShip.fire(delta));
         }
         catch(java.lang.NullPointerException e){}
 
-        for(Enemy e: enemies){
+        playerShip.move(delta);
+
+        for(Ship e: enemies){
             e.move(delta);
         }
 
@@ -127,7 +139,7 @@ public class GameScreen extends ScreenAdapter {
     private void checkPlayerProjectileCollisions() {
 
         ArrayList<Projectile> projectilesToRemove = new ArrayList<Projectile>();
-        ArrayList<Enemy> enemiesToRemove = new ArrayList<Enemy>();
+        ArrayList<Ship> enemiesToRemove = new ArrayList<Ship>();
 
         for (int i = 0; i < playerProjectiles.size(); i++) {
             if (playerProjectiles.get(i).getY() > WORLD_HEIGHT) {
