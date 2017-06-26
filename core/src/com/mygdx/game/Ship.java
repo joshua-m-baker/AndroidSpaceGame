@@ -34,6 +34,8 @@ public abstract class Ship {
         this.WORLD_HEIGHT =  WORLD_HEIGHT;
         this.WORLD_WIDTH = WORLD_WIDTH;
 
+        System.out.println(WORLD_HEIGHT);
+
         this.sprite = new Sprite(new Texture(imagePath));
         width = sprite.getWidth();
         height = sprite.getHeight();
